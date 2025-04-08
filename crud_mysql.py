@@ -3,11 +3,11 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 
 # Configuración de conexión
-host = "localhost"
-port = 3306
-user = "root"
-password = ""  # Deja vacío si no tiene contraseña
-database = "testdb"
+host = "mysql-db-test-jaag141-cbae.b.aivencloud.com:20259"
+port = 20259
+user = "avnadmin"
+password = "AVNS_TxkkcYsOoIOiLnb-ZUj"  # Deja vacío si no tiene contraseña
+database = "defaultdb"
 
 # Crear el motor de conexión
 engine = create_engine(f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}")
