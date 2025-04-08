@@ -18,7 +18,7 @@ engine = create_engine(
 @st.cache_data(ttl=60)
 def get_data():
     try:
-        query = "SELECT * FROM tu_tabla"
+        query = "SELECT * FROM usuarios"  # <-- CAMBIADO
         return pd.read_sql(query, engine)
     except Exception as e:
         st.error(f"Ocurrió un error al conectar: {e}")
