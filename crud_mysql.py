@@ -10,10 +10,7 @@ password = "AVNS_TxkkcYsOoIOiLnb-ZUj"  # Deja vacío si no tiene contraseña
 database = "defaultdb"
 
 # Crear el motor de conexión
-secrets = st.secrets["mysql"]
-engine = create_engine(
-    f"mysql+mysqlconnector://{secrets.user}:{secrets.password}@{secrets.host}:{secrets.port}/{secrets.database}"
-)
+engine = create_engine(f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}")
 
 # Función para cargar los datos
 @st.cache_data(ttl=60)
