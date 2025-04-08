@@ -4,13 +4,20 @@ from sqlalchemy import create_engine, text
 
 # Configuración de conexión
 host = "mysql-db-test-jaag141-cbae.b.aivencloud.com:20259"
-port = int(20259)
+port = int("20259")
 user = "avnadmin"
 password = "AVNS_TxkkcYsOoIOiLnb-ZUj"  # Deja vacío si no tiene contraseña
 database = "defaultdb"
 
-# Crear el motor de conexión
-engine = create_engine(f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}")
+
+# Mostrar para depuración (puedes eliminar luego)
+st.write("Conectando a:", host, ":", port, type(port))
+
+# Crear conexión
+engine = create_engine(
+    f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
+)
+
 
 # Función para cargar los datos
 @st.cache_data(ttl=60)
