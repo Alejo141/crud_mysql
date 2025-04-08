@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, text
 
 # Configuración de conexión
 host = "mysql-db-test-jaag141-cbae.b.aivencloud.com:20259"
-port = 20259
+port = int(20259)
 user = "avnadmin"
 password = "AVNS_TxkkcYsOoIOiLnb-ZUj"  # Deja vacío si no tiene contraseña
 database = "defaultdb"
