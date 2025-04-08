@@ -9,9 +9,6 @@ user = "avnadmin"
 password = "AVNS_TxkkcYsOoIOiLnb-ZUj"
 database = "defaultdb"
 
-# Mostrar para depuración
-st.write("Conectando a:", host, ":", port, type(port))
-
 # Crear conexión
 engine = create_engine(
     f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
