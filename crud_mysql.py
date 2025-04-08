@@ -17,8 +17,13 @@ engine = create_engine(
 # Función para cargar los datos
 @st.cache_data(ttl=60)
 def get_data():
-    query = "SELECT * FROM usuarios"
-    return pd.read_sql(query, engine)
+    try:
+        engine = create_engine("mysql+mysqlconnector://usuario:contraseña@host:puerto/nombre_base")
+        query = "SELECT * FROM tu_tabla"
+        return pd.read_sql(query, engine)
+    except Exception as e:
+        st.error(f"Ocurrió un error al conectar: {e}")
+        return pd.DataFrame()
 
 def add_user(nombre, correo):
     with engine.connect() as conn:
