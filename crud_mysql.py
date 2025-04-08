@@ -7,11 +7,12 @@ host = "mysql-db-test-jaag141-cbae.b.aivencloud.com"
 port = 20255  # sin comillas
 user = "avnadmin"
 password = "AVNS_TxkkcYsOoIOiLnb-ZUj"
-database = "defaultdb"
+database = "defaultdb"  # Exactamente igual al nombre de la BD en MySQL
 
 # Crear conexión
 engine = create_engine(
     f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
+    echo=True
 )
 
 # Función para cargar los datos
