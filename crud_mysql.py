@@ -18,7 +18,6 @@ engine = create_engine(
 @st.cache_data(ttl=60)
 def get_data():
     try:
-        engine = create_engine("mysql+mysqlconnector://usuario:contraseña@host:puerto/nombre_base")
         query = "SELECT * FROM tu_tabla"
         return pd.read_sql(query, engine)
     except Exception as e:
