@@ -2,19 +2,18 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine, text
 
-# Parámetros de conexión
+# Configuración de conexión
 host = "mysql-db-test-jaag141-cbae.b.aivencloud.com"
-port = 20255
+port = 20255  # sin comillas
 user = "avnadmin"
 password = "AVNS_TxkkcYsOoIOiLnb-ZUj"
-database = "defaultdb"
+database = "defaultdb"  # Exactamente igual al nombre de la BD en MySQL
 
-# Crear conexión usando PyMySQL
 engine = create_engine(
-        f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}",
-        echo=True,  # Opcional: muestra SQL en consola
-        pool_pre_ping=True  # Opcional: evita desconexiones por inactividad
-    )
+    f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}",
+    echo=True,  # Opcional: muestra SQL en consola
+    pool_pre_ping=True  # Opcional: evita desconexiones por inactividad
+)
 
 # Función para cargar los datos
 @st.cache_data(ttl=60)
