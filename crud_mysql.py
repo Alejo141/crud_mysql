@@ -9,11 +9,20 @@ user = "avnadmin"
 password = "AVNS_TxkkcYsOoIOiLnb-ZUj"
 database = "defaultdb"  # Exactamente igual al nombre de la BD en MySQL
 
-# Crear conexión
-engine = create_engine(
-    f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
-    echo=True
-)
+# Crear conexión usando PyMySQL
+try:
+    engine = create_engine(
+        f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}",
+        echo=True,  # Opcional: muestra SQL en consola
+        pool_pre_ping=True  # Opcional: evita desconexiones por inactividad
+    )
+
+    with engine.connect() as connection:
+        result = connection.execute(text("SELECT 1"))
+        print("✅ Conexión exitosa:", result.scalar())
+
+except Exception as e:
+    print("❌ Error al conectar:", e)
 
 # Función para cargar los datos
 @st.cache_data(ttl=60)
