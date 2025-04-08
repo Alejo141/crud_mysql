@@ -3,21 +3,19 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 
 # Configuración de conexión
-host = "mysql-db-test-jaag141-cbae.b.aivencloud.com:20259"
-port = int("20259")
+host = "mysql-db-test-jaag141-cbae.b.aivencloud.com"
+port = 20259  # sin comillas
 user = "avnadmin"
-password = "AVNS_TxkkcYsOoIOiLnb-ZUj"  # Deja vacío si no tiene contraseña
+password = "AVNS_TxkkcYsOoIOiLnb-ZUj"
 database = "defaultdb"
 
-
-# Mostrar para depuración (puedes eliminar luego)
+# Mostrar para depuración
 st.write("Conectando a:", host, ":", port, type(port))
 
 # Crear conexión
 engine = create_engine(
     f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
 )
-
 
 # Función para cargar los datos
 @st.cache_data(ttl=60)
@@ -27,19 +25,27 @@ def get_data():
 
 def add_user(nombre, correo):
     with engine.connect() as conn:
-        conn.execute(text("INSERT INTO usuarios (nombre, correo) VALUES (:nombre, :correo)"), {"nombre": nombre, "correo": correo})
-        conn.commit()
+        with conn.begin():
+            conn.execute(
+                text("INSERT INTO usuarios (nombre, correo) VALUES (:nombre, :correo)"),
+                {"nombre": nombre, "correo": correo}
+            )
 
 def update_user(user_id, nombre, correo):
     with engine.connect() as conn:
-        conn.execute(text("UPDATE usuarios SET nombre = :nombre, correo = :correo WHERE id = :id"),
-                     {"nombre": nombre, "correo": correo, "id": user_id})
-        conn.commit()
+        with conn.begin():
+            conn.execute(
+                text("UPDATE usuarios SET nombre = :nombre, correo = :correo WHERE id = :id"),
+                {"nombre": nombre, "correo": correo, "id": user_id}
+            )
 
 def delete_user(user_id):
     with engine.connect() as conn:
-        conn.execute(text("DELETE FROM usuarios WHERE id = :id"), {"id": user_id})
-        conn.commit()
+        with conn.begin():
+            conn.execute(
+                text("DELETE FROM usuarios WHERE id = :id"),
+                {"id": user_id}
+            )
 
 # Interfaz Streamlit
 st.title("Gestión de Usuarios - MySQL con Streamlit")
@@ -59,30 +65,36 @@ elif menu == "Agregar Usuario":
         if nombre and correo:
             add_user(nombre, correo)
             st.success("Usuario agregado correctamente")
-            st.cache_data.clear()  # Limpia caché para ver cambios
+            st.cache_data.clear()
         else:
             st.warning("Por favor, completa todos los campos.")
 
 elif menu == "Editar Usuario":
     st.subheader("Editar usuario existente")
     df = get_data()
-    user_ids = df['id'].tolist()
-    selected_id = st.selectbox("Selecciona ID de usuario", user_ids)
-    user = df[df['id'] == selected_id].iloc[0]
-    nombre = st.text_input("Nombre", user["nombre"])
-    correo = st.text_input("Correo", user["correo"])
+    if not df.empty:
+        user_ids = df['id'].tolist()
+        selected_id = st.selectbox("Selecciona ID de usuario", user_ids)
+        user = df[df['id'] == selected_id].iloc[0]
+        nombre = st.text_input("Nombre", user["nombre"])
+        correo = st.text_input("Correo", user["correo"])
 
-    if st.button("Actualizar"):
-        update_user(selected_id, nombre, correo)
-        st.success("Usuario actualizado")
-        st.cache_data.clear()
+        if st.button("Actualizar"):
+            update_user(selected_id, nombre, correo)
+            st.success("Usuario actualizado")
+            st.cache_data.clear()
+    else:
+        st.info("No hay usuarios para editar.")
 
 elif menu == "Eliminar Usuario":
     st.subheader("Eliminar usuario")
     df = get_data()
-    user_ids = df['id'].tolist()
-    selected_id = st.selectbox("Selecciona ID de usuario", user_ids)
-    if st.button("Eliminar"):
-        delete_user(selected_id)
-        st.success("Usuario eliminado")
-        st.cache_data.clear()
+    if not df.empty:
+        user_ids = df['id'].tolist()
+        selected_id = st.selectbox("Selecciona ID de usuario", user_ids)
+        if st.button("Eliminar"):
+            delete_user(selected_id)
+            st.success("Usuario eliminado")
+            st.cache_data.clear()
+    else:
+        st.info("No hay usuarios para eliminar.")
